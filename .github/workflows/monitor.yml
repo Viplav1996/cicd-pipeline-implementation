@@ -1,0 +1,40 @@
+name: Health Check
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'  # Every 15 minutes
+  workflow_dispatch:
+
+jobs:
+  health-check:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Check application health
+      run: |
+        response=$(curl -s -o /dev/null -w "%{http_code}" https://your-app.com/health)
+        if [ "$response" -ne 200 ]; then
+          echo "Health check failed with status: $response"
+          exit 1
+        fi
+        echo "Application is healthy"
+    
+    - name: Slack notification on failure
+      if: failure()
+      uses: slackapi/slack-github-action@v1.24.0
+      with:
+        payload: |
+          {
+            "text": "⚠️ Application health check failed",
+            "blocks": [
+              {
+                "type": "section",
+                "text": {
+                  "type": "mrkdwn",
+                  "text": "*Health Check Failed*\nRepository: ${{ github.repository }}\nBranch: ${{ github.ref }}"
+                }
+              }
+            ]
+          }
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
