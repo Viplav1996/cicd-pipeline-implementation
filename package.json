@@ -20,7 +20,7 @@
   "homepage": "https://github.com/Viplav1996/cicd-pipeline-implementation#readme",
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "eslint": "^10.11.0",
+    "eslint": "^10.12.0",
     "globals": "^17.12.0",
     "jest": "^30.5.2"
   }
